@@ -11,7 +11,7 @@
 #define H 100
 #define X 100
 #define kStartPoint CGPointMake(X, self.bounds.size.height - H)
-#define kVelocit 0.5
+#define kVelocit 0.3
 #define kGravity 0.1
 #define kRadius 10
 #define kDamping 0.8
@@ -100,7 +100,7 @@ static BOOL isBegin = NO;
             //        [link addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
             //        _link = link;
             
-            NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:1 / 120 target:self selector:@selector(move) userInfo:nil repeats:YES];
+            NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:1 / 80 target:self selector:@selector(move) userInfo:nil repeats:YES];
             [timer fire];
             _timer = timer;
             _lastDate = [NSDate date];
@@ -190,8 +190,6 @@ static BOOL isBegin = NO;
             if ((interRect.origin.y == rect.origin.y && interRect.origin.y > birdRect.origin.y) || (interMaxY == hinderMaxY && interMaxY < birdMaxY)) {
                 _Vy = -_Vy;
             }
-            //            [self.paths removeObject:rt];
-            //            NSLog(@"CGRectContainsPoint");
             break;
         }
     }
@@ -211,51 +209,13 @@ static BOOL isBegin = NO;
         title = @"你赢了";
         subTitle = [NSString stringWithFormat:@"耗时:%.2f", [[NSDate date] timeIntervalSinceDate:_lastDate]];
     }
-
-    //    [_link invalidate];
+    
     [_timer invalidate];
     UIAlertView* alert = [[UIAlertView alloc] initWithTitle:title message:subTitle delegate:self cancelButtonTitle:@"重新开始" otherButtonTitles:nil, nil];
-//    [alert addButtonWithTitle:@"确定"];
-//    self.alertVC = [UIAlertController alertControllerWithTitle:title message:subTitle preferredStyle:(UIAlertControllerStyleAlert)];
-//    UIAlertAction *winAction = [UIAlertAction actionWithTitle:@"再来一局" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
-//        [self reset];
-//    }];
-//    UIAlertAction *loseAction = [UIAlertAction actionWithTitle:@"退出程序" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//        [UIView animateWithDuration:1.2 animations:^{
-//            self.alpha = 0;
-//            self.frame = CGRectMake(0, 0, 0, 0);
-//        }completion:^(BOOL finished) {
-//            exit(0);
-//        }];
-//    }];
-//    [self.alertVC addAction:winAction];
-//    [self.alertVC addAction:loseAction];
-   // UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
-    //UIViewController * selfVC = [storyboard instantiateViewControllerWithIdentifier:@"VC"];
-//    UIViewController * selfVC = [self viewController];
-//    [selfVC presentViewController:self.alertVC animated:YES completion:nil];
+
     [alert show];
     flag = YES;
 }
-
-- (UIViewController*)viewController {
-    
-    for (UIView* next = [self superview]; next; next = next.superview) {
-        
-        UIResponder* nextResponder = [next nextResponder];
-        
-        if ([nextResponder isKindOfClass:[UINavigationController class]]) {
-            
-            return (UIViewController*)nextResponder;
-        }
-        
-    }
-    
-    return nil;
-    
-}
-
-
 
 - (void)createHinder
 {
@@ -275,16 +235,17 @@ static BOOL isBegin = NO;
         CGFloat randomY = arc4random_uniform(10) / 10.0 * HinderH;
         CGFloat randomW = (1 + arc4random_uniform(2)) / 10.0 * HinderW;
         CGFloat randomH = (1 + arc4random_uniform(2)) / 10.0 * HinderH;
-
+        CGFloat lowHeight = HinderH - randomH - randomY;
+        
         CGRect rect = CGRectMake(randomX, randomY, randomW, randomH);
-
+        
         for (NSValue* rt in self.paths) {
             if (CGRectIntersectsRect([rt CGRectValue], rect)) {
                 notIntersect = NO;
                 break;
             }
         }
-        if (notIntersect) {
+        if (notIntersect && (lowHeight >= 100)) {
 
             [self.paths addObject:[NSValue valueWithCGRect:rect]];
 
@@ -342,7 +303,7 @@ static BOOL isBegin = NO;
 
     for (NSValue* rt in self.paths) {
         UIBezierPath* path = [UIBezierPath bezierPathWithRect:[rt CGRectValue]];
-        //        [[UIColor colorWithHue:arc4random_uniform(255)/255.0 saturation:1 brightness:1 alpha:1]setFill];
+
         [[UIColor grayColor] setFill];
         [path fill];
         [path stroke];
