@@ -7,17 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		798680561CF9AEAF0048F31D /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 798680551CF9AEAF0048F31D /* icon.png */; };
 		82DCC4491BD1DD1D00A53D31 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 82DCC4481BD1DD1D00A53D31 /* main.m */; };
 		82DCC44C1BD1DD1D00A53D31 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 82DCC44B1BD1DD1D00A53D31 /* AppDelegate.m */; };
 		82DCC44F1BD1DD1D00A53D31 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 82DCC44E1BD1DD1D00A53D31 /* ViewController.m */; };
 		82DCC4521BD1DD1D00A53D31 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 82DCC4501BD1DD1D00A53D31 /* Main.storyboard */; };
 		82DCC4541BD1DD1D00A53D31 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82DCC4531BD1DD1D00A53D31 /* Assets.xcassets */; };
 		82DCC4571BD1DD1D00A53D31 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 82DCC4551BD1DD1D00A53D31 /* LaunchScreen.storyboard */; };
-		82DCC4601BD1DD8D00A53D31 /* TanShe.m in Sources */ = {isa = PBXBuildFile; fileRef = 82DCC45F1BD1DD8D00A53D31 /* TanShe.m */; settings = {ASSET_TAGS = (); }; };
-		82DCC4631BD1E38000A53D31 /* UIView+DrawRect.m in Sources */ = {isa = PBXBuildFile; fileRef = 82DCC4621BD1E38000A53D31 /* UIView+DrawRect.m */; settings = {ASSET_TAGS = (); }; };
+		82DCC4601BD1DD8D00A53D31 /* TanShe.m in Sources */ = {isa = PBXBuildFile; fileRef = 82DCC45F1BD1DD8D00A53D31 /* TanShe.m */; };
+		82DCC4631BD1E38000A53D31 /* UIView+DrawRect.m in Sources */ = {isa = PBXBuildFile; fileRef = 82DCC4621BD1E38000A53D31 /* UIView+DrawRect.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		798680551CF9AEAF0048F31D /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		82DCC4441BD1DD1D00A53D31 /* 弹射.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "弹射.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		82DCC4481BD1DD1D00A53D31 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		82DCC44A1BD1DD1D00A53D31 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 		82DCC4461BD1DD1D00A53D31 /* 弹射 */ = {
 			isa = PBXGroup;
 			children = (
+				798680551CF9AEAF0048F31D /* icon.png */,
 				82DCC44A1BD1DD1D00A53D31 /* AppDelegate.h */,
 				82DCC44B1BD1DD1D00A53D31 /* AppDelegate.m */,
 				82DCC44D1BD1DD1D00A53D31 /* ViewController.h */,
@@ -148,6 +151,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				82DCC4571BD1DD1D00A53D31 /* LaunchScreen.storyboard in Resources */,
+				798680561CF9AEAF0048F31D /* icon.png in Resources */,
 				82DCC4541BD1DD1D00A53D31 /* Assets.xcassets in Resources */,
 				82DCC4521BD1DD1D00A53D31 /* Main.storyboard in Resources */,
 			);

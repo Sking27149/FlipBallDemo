@@ -16,7 +16,7 @@
 #define kRadius 10
 #define kDamping 0.8
 
-@interface TanShe ()
+@interface TanShe ()<UIAlertViewDelegate>
 
 
 @property (nonatomic, assign) CGPoint birdPoint;
@@ -34,8 +34,12 @@
 @property (nonatomic, strong) NSMutableArray* paths;
 @property (nonatomic, strong) NSDate* lastDate;
 
+@property (nonatomic, strong) UIAlertController *alertVC;
+
 @end
 
+static BOOL flag = NO;
+static BOOL isBegin = NO;
 @implementation TanShe
 
 - (NSMutableArray*)paths
@@ -72,32 +76,40 @@
 
 - (void)touchesMoved:(NSSet<UITouch*>*)touches withEvent:(UIEvent*)event
 {
-    CGPoint point = [[touches anyObject] locationInView:self];
-
-    _birdPoint = _isOn ? point : _birdPoint;
-
-    _isMoving = YES;
-    [self setNeedsDisplay];
+    if (isBegin == NO) {
+        CGPoint point = [[touches anyObject] locationInView:self];
+        
+        _birdPoint = _isOn ? point : _birdPoint;
+        
+        _isMoving = YES;
+        [self setNeedsDisplay];
+    }
+    
 }
 
 - (void)touchesEnded:(NSSet<UITouch*>*)touches withEvent:(UIEvent*)event
 {
-    if (_isOn) {
-        _isMoving = NO;
-        _Vx = (kStartPoint.x - _birdPoint.x) * kVelocit;
-        _Vy = (kStartPoint.y - _birdPoint.y) * kVelocit;
+    if (isBegin == NO) {
+        if (_isOn) {
+            _isMoving = NO;
+            _Vx = (kStartPoint.x - _birdPoint.x) * kVelocit;
+            _Vy = (kStartPoint.y - _birdPoint.y) * kVelocit;
+            
+            NSLog(@"vx=%0.2f  vy=%0.2f", _Vx, _Vy);
+            //        CADisplayLink* link = [CADisplayLink displayLinkWithTarget:self selector:@selector(move)];
+            //        [link addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+            //        _link = link;
+            
+            NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:1 / 120 target:self selector:@selector(move) userInfo:nil repeats:YES];
+            [timer fire];
+            _timer = timer;
+            _lastDate = [NSDate date];
+            isBegin = YES;
+        }
 
-        NSLog(@"vx=%0.2f  vy=%0.2f", _Vx, _Vy);
-        //        CADisplayLink* link = [CADisplayLink displayLinkWithTarget:self selector:@selector(move)];
-        //        [link addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
-        //        _link = link;
-
-        NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:1 / 120 target:self selector:@selector(move) userInfo:nil repeats:YES];
-        [timer fire];
-        _timer = timer;
-        _lastDate = [NSDate date];
     }
-    _isOn = NO;
+        _isOn = NO;
+    
 }
 
 - (void)move
@@ -109,8 +121,10 @@
     _birdPoint.y += _Vy;
 
     //    NSLog(@"%.2f   %9f  %f",_birdPoint.y,_Vy,self.bounds.size.height - kRadius);
-
-    [self check];
+    if (flag == NO) {
+        [self check];
+    }
+    
     [self setNeedsDisplay];
 }
 
@@ -183,10 +197,16 @@
     }
 }
 
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0) {
+        [self reset];
+    }
+}
+
 - (void)gameOver
 {
     NSString* title = @"你输了";
-    NSString* subTitle = @"大傻逼";
+    NSString* subTitle = nil;
     if (self.paths.count == 3 && CGRectContainsPoint(_endRect, _birdPoint)) {
         title = @"你赢了";
         subTitle = [NSString stringWithFormat:@"耗时:%.2f", [[NSDate date] timeIntervalSinceDate:_lastDate]];
@@ -194,9 +214,48 @@
 
     //    [_link invalidate];
     [_timer invalidate];
-    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:title message:subTitle delegate:self cancelButtonTitle:@"取消" otherButtonTitles:nil, nil];
+    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:title message:subTitle delegate:self cancelButtonTitle:@"重新开始" otherButtonTitles:nil, nil];
+//    [alert addButtonWithTitle:@"确定"];
+//    self.alertVC = [UIAlertController alertControllerWithTitle:title message:subTitle preferredStyle:(UIAlertControllerStyleAlert)];
+//    UIAlertAction *winAction = [UIAlertAction actionWithTitle:@"再来一局" style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+//        [self reset];
+//    }];
+//    UIAlertAction *loseAction = [UIAlertAction actionWithTitle:@"退出程序" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//        [UIView animateWithDuration:1.2 animations:^{
+//            self.alpha = 0;
+//            self.frame = CGRectMake(0, 0, 0, 0);
+//        }completion:^(BOOL finished) {
+//            exit(0);
+//        }];
+//    }];
+//    [self.alertVC addAction:winAction];
+//    [self.alertVC addAction:loseAction];
+   // UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+    //UIViewController * selfVC = [storyboard instantiateViewControllerWithIdentifier:@"VC"];
+//    UIViewController * selfVC = [self viewController];
+//    [selfVC presentViewController:self.alertVC animated:YES completion:nil];
     [alert show];
+    flag = YES;
 }
+
+- (UIViewController*)viewController {
+    
+    for (UIView* next = [self superview]; next; next = next.superview) {
+        
+        UIResponder* nextResponder = [next nextResponder];
+        
+        if ([nextResponder isKindOfClass:[UINavigationController class]]) {
+            
+            return (UIViewController*)nextResponder;
+        }
+        
+    }
+    
+    return nil;
+    
+}
+
+
 
 - (void)createHinder
 {
@@ -253,15 +312,16 @@
 
 - (void)reset
 {
-    //    NSLog(@"0");
+    isBegin = NO;
+    flag = NO;
+    [_timer invalidate];
+    _Vx = 0;
+    _Vy = 0;
     _birdPoint = kStartPoint;
     _paths = nil;
     [_link invalidate];
-    //    NSLog(@"1");
     [self createHinder];
-    //    NSLog(@"2");
     [self setNeedsDisplay];
-    //    NSLog(@"over");
 }
 
 - (void)drawRect:(CGRect)rect
